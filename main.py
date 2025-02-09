@@ -100,13 +100,13 @@ def generate_level():
     return level, player_x, player_y, width, height, coins
 def main():
     clock = pygame.time.Clock()
+    current_level = 1
+    running = True
     
-    # Generate level with random size and coins
+    # Initialize level
     level, player_x, player_y, level_width, level_height, coins = generate_level()
-    score = 0
-    
-    # Create player at the center of the generated room
     player = Unit(player_x, player_y)
+    score = 0
     
     # Create wall list
     walls = []
@@ -115,7 +115,6 @@ def main():
             if level[y][x] == 1:
                 walls.append(pygame.Rect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE))
     
-    running = True
     while running:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -145,21 +144,36 @@ def main():
         # Draw player
         pygame.draw.rect(screen, GREEN, player.rect)
 
-        # Check fo coin collision
-        player_rect = pygame.rect
+        # Check for coin collision
         for coin in coins[:]:
             if player.rect.colliderect(coin):
                 coins.remove(coin)
                 score += 10
         
+        # Check if all coins are collected
+        if len(coins) == 0:
+            # Generate new level
+            current_level += 1
+            level, player_x, player_y, level_width, level_height, coins = generate_level()
+            player = Unit(player_x, player_y)
+            
+            # Update walls for new level
+            walls = []
+            for y in range(level_height):
+                for x in range(level_width):
+                    if level[y][x] == 1:
+                        walls.append(pygame.Rect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE))
+        
         # Draw coins
         for coin in coins:
             pygame.draw.rect(screen, YELLOW, coin)
         
-        # Draw score
+        # Draw score and level
         font = pygame.font.Font(None, 36)
         score_text = font.render(f"Score: {score}", True, WHITE)
+        level_text = font.render(f"Level: {current_level}", True, WHITE)
         screen.blit(score_text, (10, 10))
+        screen.blit(level_text, (10, 50))
         
         pygame.display.flip()
         clock.tick(60)
