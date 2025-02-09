@@ -1,0 +1,11 @@
+# Constants
+SCREEN_WIDTH = 800
+SCREEN_HEIGHT = 600
+TILE_SIZE = 32
+
+# Colors
+BLACK = (0, 0, 0)
+WHITE = (255, 255, 255)
+GRAY = (128, 128, 128)
+GREEN = (0, 255, 0)
+YELLOW = (255, 255, 0)
